@@ -1,0 +1,92 @@
+﻿@page "/DatePicker"
+@inject IJSRuntime _JSRunTime
+
+<h3>DatePicker</h3>
+
+
+<MudButtonGroup >
+    <MudButton @onclick='() => ChangeDatePicker("FA")' Variant="@variantfa" Color="Color.Primary">FA</MudButton>
+    <MudButton @onclick='() => ChangeDatePicker("ENG")' Variant="@varianteng" Color="Color.Primary">ENG</MudButton>
+</MudButtonGroup>
+
+<MudDatePicker Label="@DatePickerLable" @bind-Date="@date" Culture="@culture" TitleDateFormat="dddd, dd MMMM" DateFormat="yyyy/MM/dd" UseShortNames="false" dir="@DatePickerDirection" />
+
+@code {
+    @* @bind-Date="date" *@
+    DateTime? date { set; get; } = DateTime.Today;
+
+    // DateTime? date = DateTime.Now;
+    // DateTime date = DateTime.Today; 
+    private CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
+    private string Language { set; get; } = "ENG";
+    private string DatePickerLable = "";
+    private string DatePickerDirection = "ltr";
+    private Variant variantfa { set; get; } = Variant.Outlined;
+    private Variant varianteng { set; get; } = Variant.Outlined;
+    public CultureInfo GetPersianCulture()
+    {
+        var culture = new CultureInfo("fa-IR");
+        DateTimeFormatInfo formatInfo = culture.DateTimeFormat;
+        formatInfo.AbbreviatedDayNames = new[] { "ی", "د", "س", "چ", "پ", "ج", "ش" };
+        formatInfo.DayNames = new[] { "یکشنبه", "دوشنبه", "سه شنبه", "چهار شنبه", "پنجشنبه", "جمعه", "شنبه" };
+        var monthNames = new[]
+        {
+            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن",
+            "اسفند",
+            "",
+        };
+        formatInfo.AbbreviatedMonthNames =
+            formatInfo.MonthNames =
+                formatInfo.MonthGenitiveNames = formatInfo.AbbreviatedMonthGenitiveNames = monthNames;
+        formatInfo.AMDesignator = "ق.ظ";
+        formatInfo.PMDesignator = "ب.ظ";
+        formatInfo.ShortDatePattern = "yyyy/MM/dd";
+        formatInfo.LongDatePattern = "dddd, dd MMMM,yyyy";
+        formatInfo.FirstDayOfWeek = DayOfWeek.Saturday;
+        System.Globalization.Calendar cal = new PersianCalendar();
+        FieldInfo fieldInfo = culture.GetType().GetField("calendar", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (fieldInfo != null)
+            fieldInfo.SetValue(culture, cal);
+        FieldInfo info = formatInfo.GetType().GetField("calendar", BindingFlags.NonPublic | BindingFlags.Instance);
+        if (info != null)
+            info.SetValue(formatInfo, cal);
+        culture.NumberFormat.NumberDecimalSeparator = "/";
+        culture.NumberFormat.DigitSubstitution = DigitShapes.NativeNational;
+        culture.NumberFormat.NumberNegativePattern = 0;
+        return culture;
+    }
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         await _JSRunTime.InvokeVoidAsync("SetDatePicker", Language);
+    //     }
+    //     // return base.OnAfterRenderAsync(firstRender);
+    // }
+    private async Task ChangeDatePicker(string Language)
+    {
+        if (Language == "FA")
+        {
+
+            DatePickerLable = "Persian";
+            variantfa = Variant.Filled;
+            varianteng = Variant.Outlined;
+            date = DateTime.Today;
+            StateHasChanged();
+
+            culture = CultureInfo.GetCultureInfo("fa-IR");
+            date = DateTime.Today;
+            StateHasChanged();
+            DatePickerDirection = "rtl";
+        }
+        else
+        {
+            DatePickerLable = "";
+            culture = CultureInfo.GetCultureInfo("en-US");
+            varianteng = Variant.Filled;
+            variantfa = Variant.Outlined;
+            DatePickerDirection = "ltr";
+        }
+        await Task.CompletedTask;
+    }
+}
