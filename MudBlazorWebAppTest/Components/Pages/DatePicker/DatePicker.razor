@@ -1,0 +1,54 @@
+﻿@page "/DatePicker"
+
+<MudButton @onclick='() => ChangeDatePicker("FA")' Variant="@variantfa" Color="Color.Primary">FA</MudButton>
+<MudButton @onclick='() => ChangeDatePicker("ENG")' Variant="@varianteng" Color="Color.Primary">ENG</MudButton>
+
+<MudDatePicker Culture="Thread.CurrentThread.CurrentCulture" DateFormat="yyyy/MM/dd" />
+
+
+@code {
+    MudDatePicker _picker;
+
+    public DateTime? date = DateTime.Today;
+
+    public CultureInfo culture = CultureInfo.GetCultureInfo("en-US");
+
+    private string language = "ENG";
+
+    private Variant variantfa = Variant.Outlined;
+    private Variant varianteng = Variant.Outlined;
+
+
+    private async Task ChangeDatePicker(string language)
+    {
+        if (language == "FA")
+        {
+            culture = CultureInfo.GetCultureInfo("fa-IR");
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("fa-IR", false);
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = PersianDateExtensionMethods.GetPersianCulture();
+            //_picker.Culture = culture;
+            System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat = new CultureInfo("fa-IR").DateTimeFormat;
+
+            // _picker.Date = date;
+            // _picker.Label = "Persian";
+            // _picker.TitleDateFormat = "dddd, dd MMMM";
+
+            variantfa = Variant.Filled;
+            varianteng = Variant.Outlined;
+        }
+        else
+        {
+            culture = CultureInfo.GetCultureInfo("en-US");
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US", false);
+            System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat = new CultureInfo("en-US").DateTimeFormat;
+
+            //_picker.Culture = culture;
+            // _picker.Date = date;
+            // _picker.Label = "";
+
+            varianteng = Variant.Filled;
+            variantfa = Variant.Outlined;
+        }
+        await Task.CompletedTask;
+    }
+}

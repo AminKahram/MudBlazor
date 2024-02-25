@@ -1,0 +1,45 @@
+﻿@page "/DatePicker2"
+
+<h3>DatePicker</h3>
+
+<MudButton @onclick='() => ChangeDatePicker("FA")' Variant='variantfa' Color="Color.Primary">FA</MudButton>
+<MudButton @onclick='() => ChangeDatePicker("ENG")' Variant='varianteng' Color="Color.Primary">ENG</MudButton>
+
+@if (!gregorian)
+{
+    <MudDatePicker @bind-Date="@date" Culture='CultureInfo.GetCultureInfo("fa-IR")' DateFormat="yyyy/MM/dd" />
+}
+else
+{
+    <MudDatePicker @bind-Date="@date" DateFormat="yyyy/MM/dd" />
+}
+
+
+
+@code {
+
+    public DateTime? date { get; set; } = DateTime.Today;
+
+    private Variant variantfa = Variant.Outlined;
+    private Variant varianteng = Variant.Filled;
+
+    bool gregorian = true;
+
+    private async Task ChangeDatePicker(string language)
+    {
+        if (language == "FA")
+        {
+            gregorian = false;
+            variantfa = Variant.Filled;
+            varianteng = Variant.Outlined;
+        }
+        else
+        {
+            gregorian = true;
+            varianteng = Variant.Filled;
+            variantfa = Variant.Outlined;
+        }
+        await Task.CompletedTask;
+    }
+
+}
