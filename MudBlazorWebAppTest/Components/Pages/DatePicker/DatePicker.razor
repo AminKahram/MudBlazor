@@ -3,11 +3,11 @@
 <MudButton @onclick='() => ChangeDatePicker("FA")' Variant="@variantfa" Color="Color.Primary">FA</MudButton>
 <MudButton @onclick='() => ChangeDatePicker("ENG")' Variant="@varianteng" Color="Color.Primary">ENG</MudButton>
 
-<MudDatePicker Culture="Thread.CurrentThread.CurrentCulture" DateFormat="yyyy/MM/dd" />
+<MudDatePicker Culture="culture" DateFormat="yyyy/MM/dd" @key=switcher @bind-Date=date />
 
 
 @code {
-    MudDatePicker _picker;
+    public bool switcher { get; set; } = false;
 
     public DateTime? date = DateTime.Today;
 
@@ -16,7 +16,7 @@
     private string language = "ENG";
 
     private Variant variantfa = Variant.Outlined;
-    private Variant varianteng = Variant.Outlined;
+    private Variant varianteng = Variant.Filled;
 
 
     private async Task ChangeDatePicker(string language)
@@ -24,30 +24,16 @@
         if (language == "FA")
         {
             culture = CultureInfo.GetCultureInfo("fa-IR");
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("fa-IR", false);
-            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = PersianDateExtensionMethods.GetPersianCulture();
-            //_picker.Culture = culture;
-            System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat = new CultureInfo("fa-IR").DateTimeFormat;
-
-            // _picker.Date = date;
-            // _picker.Label = "Persian";
-            // _picker.TitleDateFormat = "dddd, dd MMMM";
-
+            switcher =true;
             variantfa = Variant.Filled;
             varianteng = Variant.Outlined;
         }
         else
         {
             culture = CultureInfo.GetCultureInfo("en-US");
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US", false);
-            System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat = new CultureInfo("en-US").DateTimeFormat;
-
-            //_picker.Culture = culture;
-            // _picker.Date = date;
-            // _picker.Label = "";
-
-            varianteng = Variant.Filled;
+            switcher = false;
             variantfa = Variant.Outlined;
+            varianteng = Variant.Filled;
         }
         await Task.CompletedTask;
     }

@@ -7,17 +7,17 @@
 
 @if (!gregorian)
 {
-    <MudDatePicker @bind-Date="@date" Culture='CultureInfo.GetCultureInfo("fa-IR")' DateFormat="yyyy/MM/dd" />
+    <MudDatePicker @bind-Date="@date" Culture='CultureInfo.GetCultureInfo("fa-IR")' DateFormat="yyyy/MM/dd"/>
+
 }
 else
 {
-    <MudDatePicker @bind-Date="@date" DateFormat="yyyy/MM/dd" />
+    <MudDatePicker  @bind-Date="@date" DateFormat="yyyy/MM/dd" />
 }
 
 
 
 @code {
-
     public DateTime? date { get; set; } = DateTime.Today;
 
     private Variant variantfa = Variant.Outlined;
